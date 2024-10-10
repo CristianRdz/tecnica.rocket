@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  app:
+    image: openjdk:8-jre-alpine # Imagen base de Java 8
+    build:
+      context: . # Tu directorio actual que contiene el Dockerfile
+      dockerfile: dockerfile # Nombre de tu Dockerfile
+    ports:
+      - "8080:8080" # Expone el puerto 8080 de la aplicación
+    depends_on:
+      - db # Espera a que el servicio 'db' esté listo
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/prueba # Conexión a la BD
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      # ... otras variables de entorno que necesites
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: prueba
+    volumes:
+      - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
